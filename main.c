@@ -19,7 +19,7 @@
 
 struct bno055_t myBNO;
 
-/*
+
 typedef int bool;
 #define TRUE 0x01
 #define FALSE 0x00
@@ -40,13 +40,6 @@ typedef enum
       OPERATION_MODE_NDOF_FMC_OFF = 0X0B,
       OPERATION_MODE_NDOF  = 0X0C
     } adafruit_bno055_opmode_t;
-
-uint8_t unitsel = (0 << 7) | // Orientation = Android
-                    (0 << 4) | // Temperature = Celsius
-                    (0 << 2) | // Euler = Degrees
-                    (1 << 1) | // Gyro = Rads
-                    (0 << 0);  // Accelerometer = m/s^2
-  write8(BNO055_UNIT_SEL_ADDR, unitsel);
   
     
     //initialization function
@@ -55,7 +48,7 @@ bool bno055_init1(adafruit_bno055_opmode_t mode)
     I2C_Start();
     
     uint8_t id = readByte(BNO055_CHIP_ID_ADDR); 
-    while (id!= 0xA0) // checks if the chip is properly connected
+    while (id!= 0xA0) // checks if the chip is properly connected, 0xA0 is the proper return address
     {
         LCD_PrintString("Not connected");
         return FALSE;
@@ -78,19 +71,21 @@ bool bno055_init1(adafruit_bno055_opmode_t mode)
     writeByte(BNO055_PWR_MODE_ADDR,BNO055_POWER_MODE_NORMAL);
     CyDelay(10);
     writeByte(BNO055_PAGE_ID_ADDR,0);
-    set the units
+   // set the units
+	    /*
     uint8_t unitsel = (0 << 7) | // Orientation = Android
                     (0 << 4) | // Temperature = Celsius
                     (0 << 2) | // Euler = Degrees
                     (1 << 1) | // Gyro = Rads
                     (0 << 0);  // Accelerometer = m/s^2
-    
+    */
     writeByte(BNO055_UNIT_SEL_ADDR, 0<<7);
     writeByte(BNO055_SYS_TRIGGER_ADDR,0x00);
     CyDelay(10);
     bno055_set_operation_mode(mode);
     return TRUE;
 }
+
 void writeByte(uint8 subAddr, uint8 dataAdded)
 {
     I2C_MasterSendStart(BNO055_I2C_ADDR1, I2C_WRITE_XFER_MODE);
@@ -119,67 +114,9 @@ uint8 readByte(uint8 subAddr)
     I2C_MasterSendStop();
     return dataStored;
 }
-s8 BNO055_read(u8 dev_addr, u8 reg_addr, u8 *reg_data, u8 cnt)
-{
-    u8 dataStored;
-    u8 stringpos = 0;
-    u8 array[BNO055_INIT_VALUE];
-    array[BNO055_INIT_VALUE] = reg_addr;
-    u8 BNO055_BUS_ARRAY_INDEX = 0;
-    for(stringpos = 0; stringpos<cnt; stringpos++)
-    {
-        array[stringpos+0]=*(reg_data +stringpos);  
-    }
-    I2C_MasterSendStart(dev_addr,I2C_READ_XFER_MODE);
-    I2C_MasterWriteByte(reg_addr);
-    I2C_MasterWriteByte(*reg_data);
-    I2C_MasterSendStop();
-    I2C_MasterSendStart(BNO055_I2C_ADDR1, I2C_READ_XFER_MODE);
-    dataStored = I2C_MasterReadByte(I2C_NAK_DATA);
-    I2C_MasterSendStop();
-    return dataStored;
-}
-s8 BNO055_write(u8 dev_addr, u8 reg_addr, u8 *reg_data, u8 cnt)
-{
-    uint8 status = 0;
-    cnt=1;
-    status = I2C_MasterSendStart(dev_addr, I2C_WRITE_XFER_MODE);
-    status = I2C_MasterWriteByte(reg_addr);
-    status = I2C_MasterWriteByte(*reg_data);
-    status = I2C_MasterSendStop();
-    return status;
-}
-
-s8 bno055_read_cpp(u8 reg_addr)
-{
-    u8 val = 0;
-    I2C_MasterSendStart(BNO055_I2C_ADDR1,I2C_WRITE_XFER_MODE);
-    I2C_MasterWriteByte(reg_addr);
-    I2C_MasterSendStop();
-    I2C_MasterSendStart(BNO055_I2C_ADDR1,I2C_READ_XFER_MODE);
-    val = I2C_MasterReadByte(reg_addr);
-    I2C_MasterSendStop();
-    return val;
-}
-s8 bno055_reads_cpp(u8 reg_addr, s8 *buffer, uint8 len)
-{
-    u8 dataStored = 0;
-    I2C_MasterSendStart(BNO055_I2C_ADDR1,I2C_READ_XFER_MODE);
-    I2C_MasterWriteByte(reg_addr);
-    I2C_MasterWriteByte(*buffer);
-    I2C_MasterSendStop();
-    I2C_MasterSendStart(BNO055_I2C_ADDR1, I2C_READ_XFER_MODE);
-    for (uint8 i = 0; i<len; i++)
-    {
-        buffer[i] = myBNO.bus_read;
-    }
-    dataStored = I2C_MasterReadByte(I2C_NAK_DATA);
-    I2C_MasterSendStop();
-}
-*/
 
 u8 dev_addr = BNO055_I2C_ADDR1;
-#define	BNO055_I2C_BUS_WRITE_ARRAY_INDEX	((u8)1)
+
 s8 bus_read(u8 dev_addr, u8 reg_addr, u8 *reg_data, u8 cnt);
 s8 bus_write(u8 dev_addr, u8 reg_addr, u8 *reg_data, u8 cnt);
 
@@ -187,66 +124,32 @@ s8 bus_write(u8 dev_addr, u8 reg_addr, u8 *reg_data, u8 cnt);
 s8 bus_write(u8 dev_addr, u8 reg_addr, u8 *reg_data, u8 cnt)
 {
     s32 BNO055_iERROR = BNO055_INIT_VALUE;
-    //u8 array[I2C_BUFFER_LEN] = {BNO055_INIT_VALUE};
-    //uint8 status = 0;
     cnt = 1;
     BNO055_iERROR = I2C_MasterSendStart(dev_addr,I2C_WRITE_XFER_MODE);
     BNO055_iERROR = I2C_MasterWriteByte(reg_addr);
     BNO055_iERROR = I2C_MasterWriteByte(*reg_data);
     I2C_MasterSendStop();
-    //array[BNO055_INIT_VALUE] = reg_addr;
-    //BNO055_iERROR = I2C_WRITE_STRING(dev_addr,array, cnt+1);
     return (s8)BNO055_iERROR;
     /*
-	s32 BNO055_iERROR = BNO055_INIT_VALUE;
-	u8 array[I2C_BUFFER_LEN];
-	u8 stringpos = BNO055_INIT_VALUE;
-
-	array[BNO055_INIT_VALUE] = reg_addr;
-	for (stringpos = BNO055_INIT_VALUE; stringpos < cnt; stringpos++) 
-    {
-        array[stringpos + BNO055_I2C_BUS_WRITE_ARRAY_INDEX] = *(reg_data + stringpos);
-	}
-	
-	* Please take the below APIs as your reference for
-	* write the data using I2C communication
-	* "BNO055_iERROR = I2C_WRITE_STRING(DEV_ADDR, ARRAY, CNT+1)"
-	* add your I2C write APIs here
 	* BNO055_iERROR is an return value of I2C read API
 	* Please select your valid return value
 	* In the driver BNO055_SUCCESS defined as 0
-    * and FAILURE defined as -1
-	* Note :
-	* This is a full duplex operation,
-	* The first read data is discarded, for that extra write operation
-	* have to be initiated. For that cnt+1 operation done
-	* in the I2C write string function
-	* For more information please refer data sheet SPI communication:
-	
-	return (s8)BNO055_iERROR;
+    * and FAILURE defined as -1or 0xFF
     */
 }
 
 s8 bus_read(u8 dev_addr, u8 reg_addr, u8 *reg_data, u8 cnt)
 {
-   // volatile unsigned int i;
-   // volatile unsigned char s_addr_internW , s_addr_internR;
-   // s_addr_internW = (dev_addr<< 1) & 0xFE;     // shift der Adresse um 1 Bit nach links da für Adresse nur obersten 7 Bits verwendet werden + Write 0bit an stelle 0
-   // s_addr_internR = (dev_addr << 1) | 0x01;     // shift der Adresse um 1 Bit nach links da für Adresse nur obersten 7 Bits verwendet werden + Read  1bit an stelle 0
     volatile s32 BNO055_iERROR = 0;
-    //uint8 status = 0;
     BNO055_iERROR = I2C_MasterSendStart(dev_addr, I2C_WRITE_XFER_MODE);
     BNO055_iERROR = I2C_MasterWriteByte(reg_addr);
     BNO055_iERROR = I2C_MasterSendStop();
     CyDelay(100);
-	//u8 array[I2C_BUFFER_LEN] = {0};
 	volatile u8 stringpos = 0;
-	//array[B0] = reg_addr;
     BNO055_iERROR = I2C_MasterSendStart(dev_addr, I2C_READ_XFER_MODE);
     BNO055_iERROR = I2C_MasterWriteByte(reg_addr);
-    
 	for (stringpos = 0; stringpos < cnt; stringpos++) 
-    {	
+   	{	
         *(reg_data+stringpos) = I2C_MasterReadByte(I2C_ACK_DATA);
 	}
     *reg_data = I2C_MasterReadByte(I2C_NAK_DATA);
@@ -264,8 +167,7 @@ void BNO055_delay_msek(u32 msek)
         CyDelay(1);
     }
 }
-
-    
+  
 s8 I2C_routine(void){
     CyDelay(10);
     myBNO.bus_read = bus_read;
@@ -295,7 +197,6 @@ int main()
     LCD_PrintString("bno055 Init done");
     CyDelay(1000);
     LCD_Position(0,0);
-    //bno055_get_selftest();
     LCD_Position(0,0);
     LCD_PrintString("                 ");
     LCD_Position(0,0);
