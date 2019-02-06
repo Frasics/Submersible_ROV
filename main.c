@@ -116,6 +116,7 @@ uint8 read8(uint8 subAddr)
 s8 set_page_zero()
 {
     write8(BNO055_PAGE_ID_REG,0);
+	return 1;
 }
 
 //set the power mode
@@ -124,6 +125,7 @@ s8 power_set_mode()
 	set_page_zero();
     write8(BNO055_PWR_MODE_ADDR,BNO055_POWER_MODE_NORMAL);
     CyDelay(10);
+	return 1;
 }    
     
 // set the units
@@ -140,12 +142,14 @@ s8 units_set_mode()
     write8(BNO055_UNIT_SEL_ADDR, 0<<7);
     write8(BNO055_SYS_TRIGGER_ADDR,0x00);
     CyDelay(10);
+	return 1;
 }
 
 s8 sensor_set_mode()
 {
 	set_page_zero();
     write8(BNO055_OPERATION_MODE_REG, BNO055_OPERATION_MODE_NDOF);
+	return 1;
 }
 
 u8 read_quat_data()
