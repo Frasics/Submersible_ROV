@@ -150,6 +150,7 @@ s8 sensor_set_mode()
 
 u8 read_quat_data()
 {
+	set_page_zero();
 	u8 data_u8[4] = {0, 0, 0, 0};
 			/* Read the eight byte value
 			of quaternion wxyz data*/
@@ -172,6 +173,7 @@ u8 read_quat_data()
 //Reading quaternion W
 s8 read_qw()
 {
+	set_page_zero();
     s8 qw1 = read8(BNO055_QUATERNION_DATA_W_LSB_ADDR);
     s8 qw2 = read8(BNO055_QUATERNION_DATA_W_MSB_ADDR);
     s16 qw = (s16)qw1;
@@ -182,6 +184,7 @@ s8 read_qw()
 //Reading quaternion X
 s8 read_qx()
 {
+	set_page_zero();
     s8 qx1 = read8(BNO055_QUATERNION_DATA_W_LSB_ADDR);
     s8 qx2 = read8(BNO055_QUATERNION_DATA_W_MSB_ADDR);
     s16 qx = (s16)qx1;
@@ -192,6 +195,7 @@ s8 read_qx()
 //Reading quaternion Y
 s8 read_qy()
 {
+	set_page_zero();
     s8 qy1 = read8(BNO055_QUATERNION_DATA_W_LSB_ADDR);
     s8 qy2 = read8(BNO055_QUATERNION_DATA_W_MSB_ADDR);
     s16 qy = (s16)qy1;
@@ -201,6 +205,7 @@ s8 read_qy()
 }//Reading quaternion Z
 s8 read_qz()
 {
+	set_page_zero();
     s8 qz1 = read8(BNO055_QUATERNION_DATA_W_LSB_ADDR);
     s8 qz2 = read8(BNO055_QUATERNION_DATA_W_MSB_ADDR);
     s16 qz = (s16)qz1;
