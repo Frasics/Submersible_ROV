@@ -36,7 +36,7 @@ s8 set_page_zero();
 s8 units_set_mode();
 
 //required address
-u8 dev_addr = BNO055_I2C_ADDR1;
+u8 dev_addr = BNO055_I2C_ADDR2;
 
 int main()
 {
