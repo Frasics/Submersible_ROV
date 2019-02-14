@@ -1,0 +1,19 @@
+-2 thrusters (Composed of a brushless motor and an ESC)
+-1 servo motor for diving planes
+-1 servo motor for gripper
+-1 -059 micro controller
+-1 -050 micro controller
+-1 linear actuator (essentially a DC motor)
+-1 h-bridge for linear actuator
+-1 LiPo battery to power motors
+-1 9V battery to power -059 microcontroller
+-1 voltage divider to measure battery life of LiPo
+-1 voltage divider to measure battery life of 9V
+-2 joystick potentiometers for x-y plane stearing
+-2 buttons for rising and lower in z-axis (ballast)
+-1 to 2 ethernet cables connecting -050 to -059
+-1 IMU
+
+Additional things:
+-connect camera to battery
+-connect camera to radio sender
